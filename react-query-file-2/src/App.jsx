@@ -4,6 +4,7 @@ import { MainLayout } from './Components/UI/MainLayout'; // Ensure this is corre
 import { Home } from './Pages/Home';
 import { FetchHold } from './Pages/FetchHold';
 import { FetchRQ } from './Pages/FetchRQ';
+import "./App.css"
 
 // Create a route
 const router = createBrowserRouter([
