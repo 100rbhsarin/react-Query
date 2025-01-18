@@ -10,10 +10,14 @@ import {
 export const FetchRQ = ()=>{
 
 
-   const {data} = useQuery({
+   const {data, isPending, isError, error} = useQuery({
   queryKey:["posts"],
   queryFn: fetchPosts, // if we pass funcion in query perentesis not needed
 })
+
+if(isPending) return <p>Loading...</p>
+if(isError) return <p>Error: {error.message || "Something Went Wrong!"}</p>
+
 
     return(
         <>
@@ -28,7 +32,6 @@ export const FetchRQ = ()=>{
                 <p>{title}</p>
                 <p>{body}</p>
               </NavLink>
-              <button onClick={() => deleteMutation.mutate(id)}>Delete</button>
        
             </li>
           );
