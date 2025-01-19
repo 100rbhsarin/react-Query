@@ -13,6 +13,12 @@ export const FetchRQ = ()=>{
    const {data, isPending, isError, error} = useQuery({
   queryKey:["posts"],
   queryFn: fetchPosts, // if we pass funcion in query perentesis not needed
+  // gcTime:1000,
+
+  // staleTime:10000,  //data fresh for 10000 sec it take data from cache till only after that it send request
+  // refetchInterval:1000, // it is use to refatch the data on fix intervel of time but oone problem with this code it not run in background
+
+  // refetchIntervalInBackground:true,
 })
 
 if(isPending) return <p>Loading...</p>
