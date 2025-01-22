@@ -1,8 +1,11 @@
 import {
-    useQuery
+  keepPreviousData,
+    useMutation,
+    useQuery,
+    useQueryClient
   } from "@tanstack/react-query";
   import './FetchRq.css'
-  import {  fetchPosts } from "../API/api";
+  import {  deletePost, fetchPosts } from "../API/api";
   import { NavLink } from "react-router-dom";
 import { useState } from "react";
  
@@ -11,9 +14,14 @@ import { useState } from "react";
 export const FetchRQ = ()=>{
 const [pageNumber,setPageNumber] = useState(0)
 
+const queryClient = useQueryClient();
+
    const {data, isPending, isError, error} = useQuery({
-  queryKey:["posts", pageNumber],
-  queryFn: ()=>fetchPosts(pageNumber), // if we pass funcion in query perentesis not needed
+  queryKey:["posts", pageNumber],//useState
+  queryFn: ()=>fetchPosts(pageNumber), // useEffect if we pass funcion in query perentesis not needed
+
+  placeholderData: keepPreviousData, // it is use to keep the previous data till the new data is not fetched
+
   // gcTime:1000,
 
   // staleTime:10000,  //data fresh for 10000 sec it take data from cache till only after that it send request
@@ -21,6 +29,29 @@ const [pageNumber,setPageNumber] = useState(0)
 
   // refetchIntervalInBackground:true,// so wee add this to run update in background
 })
+
+
+//mutation function DELETE THE POST
+const deletMutation = useMutation({
+  mutationFn:(id) => deletePost(id),
+  onSuccess:(data, id) => {
+    queryClient.setQueriesData(["posts", pageNumber],(curElem)=>{
+
+      return curElem?.filter((post) => post.id !== id)
+    })
+  } })
+
+
+  //mutation function updating THE POST
+const updateMutation = useMutation({
+  mutationFn:(id) => updatePost(id),
+  onSuccess:(apiData, postId) => {
+    queryClient.setQueriesData(["posts", pageNumber],(postsData)=>{
+
+      return postsData?.filter((post) => post.id !== id)
+    })
+  } })
+
 
 if(isPending) return <p>Loading...</p>
 if(isError) return <p>Error: {error.message || "Something Went Wrong!"}</p>
@@ -39,7 +70,7 @@ if(isError) return <p>Error: {error.message || "Something Went Wrong!"}</p>
                 <p>{title}</p>
                 <p>{body}</p>
               </NavLink>
-       
+  <button onClick={()=>deletMutation.mutate(id)}>Delet</button>
             </li>
           );
         })}
@@ -47,9 +78,21 @@ if(isError) return <p>Error: {error.message || "Something Went Wrong!"}</p>
 
     </div>
 
-    <button>prev</button>
-    <h2>{pageNumber}</h2>
-<button onClick={()=>setPageNumber(pageNumber((prev)=> prev+1) )}>Next</button>
+<div className="pagination-section container">
+    <button 
+disabled = {pageNumber === 0 ? true : false}
+onClick={()=>setPageNumber((prev)=> prev - 3)}>
+  Prev
+</button>
+
+    <p>{pageNumber/3+1}</p>
+
+<button 
+onClick={()=>setPageNumber((prev)=> prev + 3)}>
+  
+  Next
+  </button>
+</div>
         </>
     )
  
