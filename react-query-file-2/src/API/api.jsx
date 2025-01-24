@@ -38,3 +38,15 @@ export const fetchPosts = async (pageNumber) => {
   export const updatePost = (id) =>{
     return api.patch(`/posts/${id}`, {title : "i have updated the title"})
   }
+
+  //infinite Scrolling
+
+  export const fetchUsers = async ({pagePeram=1})=>{
+    try {
+      const res = 
+      await axios.get(`https://api.github.com/users?per_page=10&page=${pagePeram}`)
+      return res.data;
+    } catch (error) {
+      console.log(error)
+    }
+  }

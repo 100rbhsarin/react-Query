@@ -18,7 +18,7 @@ const queryClient = useQueryClient();
 
    const {data, isPending, isError, error} = useQuery({
   queryKey:["posts", pageNumber],//useState
-  queryFn: ()=>fetchPosts(pageNumber), // useEffect if we pass funcion in query perentesis not needed
+  queryFn: ()=>fetchPosts(pageNumber), // useEffect  //if we pass funcion in query perentesis not needed
 
   placeholderData: keepPreviousData, // it is use to keep the previous data till the new data is not fetched
 
