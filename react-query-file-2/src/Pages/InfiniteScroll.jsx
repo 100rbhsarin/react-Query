@@ -1,11 +1,12 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { fetchUsers } from "../API/api";
+import { useEffect } from "react";
 
 
 export const InfiniteScroll = () => {
 
 
-    const {data, hasNextPage, fetchNextPage,} = useInfiniteQuery ({
+    const {data, hasNextPage, fetchNextPage} = useInfiniteQuery ({
         queryKey : ["users"],
         queryFn: fetchUsers,
         getNextPageParam: (lastPage,allpages)=>{
@@ -16,7 +17,7 @@ return lastPage.length === 10 ? allpages.length + 1 : undefined
        
     console.log(data)
 
-       const handleScroll = () => {
+       const handleScroll = () => {  
       const bottom =
         window.innerHeight + window.scrollY >=
         document.documentElement.scrollHeight - 1;
@@ -25,6 +26,11 @@ return lastPage.length === 10 ? allpages.length + 1 : undefined
         fetchNextPage();
       }
     };
+
+    useEffect(()=>{
+window.addEventListener("scroll", handleScroll);
+return ()=> window.removeEventListener("scroll", handleScroll);
+}, [hasNextPage]);
 //this ia for update
     return (
         <>
